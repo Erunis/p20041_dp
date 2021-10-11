@@ -1,14 +1,15 @@
 # Diplomová práce
+## Fuzzy logika v rozpoznávání webových struktur
 - Autor: Bc. Gabriela Muchová
 - Vedoucí práce: doc. RNDr. PaedDr. Hashim Habiballa, PhD, Ph.D.
 
-## Obsah
-### ÚVOD
+### Obsah
+#### ÚVOD
 - Struktura práce
 - Motivace
 - Cíle práce
 
-### TEORETICKÁ ČÁST
+#### TEORETICKÁ ČÁST
 - Teorie webových vyhledávačů
 	- Procházení webových stránek (web crawling)
 	- Indexování (indexing)
@@ -21,7 +22,7 @@
 		- Fuzzy logická analýza pro rozpoznávání vzorů
 	- Existující knihovny pro fuzzy vyhledávání (List.js, Typesense, Fuzzy.js,...)
 
-### PRAKTICKÁ ČÁST
+#### PRAKTICKÁ ČÁST
 - Návrh architektury, návrh knihovny metod (diagramy, apod.)
 - Zprovoznit server (Springboot pro Javu)
 - Vytvořit jednoduchou vyhledávací databázi stránek, textů a obrázků
@@ -32,7 +33,14 @@
 - Nahodit existující knihovny, vyzkoušet jejich funkčnost na databázi (pravděpodobně bude třeba dělat v JS, knihovny jsou převážně javascriptové)
 - Porovnání vytvořené knihovny metod s existujícími knihovnami
 
-### Existující knihovny pro porovnávání
+#### Existující knihovny pro porovnávání
 - List.js – https://listjs.com/
 - Typesense – https://typesense.org/docs/0.21.0/api/api-clients.html#libraries
 - Apache Lucene – https://lucene.apache.org/
+
+#### Cíle práce
+1. Nastudování principů fuzzy logiky a webových systémů.
+2. Návrh knihovny metod s využitím fuzzy logiky pro rozpoznávání struktur (s využitím fuzzy logické analýzy).
+3. Implementace metod ve vhodném prostředí.
+4. Porovnání efektivity metod se stávajícími procedurami.
+5. Kompletace textu DP.
