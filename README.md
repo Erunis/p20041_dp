@@ -1,7 +1,7 @@
 # Diplomová práce
 ## Fuzzy logika v rozpoznávání webových struktur
-- Autor: Bc. Gabriela Muchová
-- Vedoucí práce: doc. RNDr. PaedDr. Hashim Habiballa, PhD, Ph.D.
+- **Autor:** Bc. Gabriela Muchová
+- **Vedoucí práce:** doc. RNDr. PaedDr. Hashim Habiballa, PhD, Ph.D.
 
 ### Obsah
 #### ÚVOD
@@ -16,11 +16,12 @@
 	- Vyhledávací algoritmy (ranking)
 - Fuzzy logika
 	- Teorie fuzzy množin
-	- Web data mining pomocí fuzzy logiky (?)
+	- Využití fuzzy logiky v reálném světě
+	- Fuzzy web data mining (?)
 	- Fuzzy webový vyhledávač
 		- Principy fuzzy vyhledávání (fuzzy matching)
 		- Fuzzy logická analýza pro rozpoznávání vzorů
-	- Existující knihovny pro fuzzy vyhledávání (List.js, Typesense, Fuzzy.js,...)
+- Rešerše existujících řešení (existující knihovny pro fuzzy vyhledávání)
 
 #### PRAKTICKÁ ČÁST
 - Návrh architektury, návrh knihovny metod (diagramy, apod.)
@@ -34,6 +35,19 @@
 - Porovnání vytvořené knihovny metod s existujícími knihovnami
 
 #### Existující knihovny pro porovnávání
-- List.js – https://listjs.com/
-- Typesense – https://typesense.org/docs/0.21.0/api/api-clients.html#libraries
-- Apache Lucene – https://lucene.apache.org/
+- List.js – https://listjs.com/, JavaScriptová knihovna
+- Fuse.js – https://fusejs.io/
+- Fuzzyset.js – https://glench.github.io/fuzzyset.js/
+- Fuzzy.js – https://github.com/mattyork/fuzzy
+- Levenary – https://npm.io/package/levenary, JavaScriptová knihovna pro výpočet nejmenější Levensteinovy vzdálenosti
+- Talisman – https://github.com/yomguithereal/talisman, JavaScript knihovna pro fuzzy matching, data mining a processing přirozených jazyků
+- TheFuzz – https://github.com/seatgeek/thefuzz, Python knihovna
+- Fuzzball – https://npm.io/package/fuzzball, JavaScriptový port TheFuzz
+- Fuzzysort – https://npm.io/package/fuzzysort, JavaScript knihovna
+- Wuzzy – https://github.com/xupit3r/wuzzy, JavaScript knihovna zpracovávající různé algoritmy a přístupy k fuzzy string matching (levensteinova vzdálenost,...)
+- Fuzzaldrin – https://github.com/atom/fuzzaldrin, CoffeeScriptová knihovna na fuzzy string matching
+- Mongoose-fuzzy-searching – https://npm.io/package/mongoose-fuzzy-searching, fuzzy string matching plugin pro MongoDB
+- Clj-fuzzy – https://github.com/Yomguithereal/clj-fuzzy – ClojureScript knihovna
+- Typesense – https://typesense.org/docs/0.21.0/api/api-clients.html#libraries, knihovna C++ metod, pravděpodobně používá fuzzy
+- Apache Lucene – https://lucene.apache.org/, vyhledávač psaný v Javě, zejména pro inspiraci
+- Flexsearch – https://github.com/nextapps-de/flexsearch, JavaScriptová knihovna, obsahuje i ranking dalších podobných knihoven
