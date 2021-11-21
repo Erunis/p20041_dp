@@ -1,5 +1,6 @@
 package com.osu.dp;
 
+import com.osu.dp.string_matching.DamerauLevenshtein;
 import com.osu.dp.string_matching.DynamicLevenshtein;
 import com.osu.dp.string_matching.LevenshteinTools;
 import com.osu.dp.string_matching.RecursiveLevenshtein;
@@ -38,6 +39,16 @@ public class DpApplication {
 		int distance = DynamicLevenshtein.computeDist(source, target);
 
 		return String.format("Levenshteinova vzdálenost pomocí matic, zdrojový řetězec: %s," +
+						" cílový řetězec: %s, vzdálenost: %d, podobnost slov: %.2f%%.",
+				source, target, distance, LevenshteinTools.countSimilarity(source, target, distance));
+	}
+
+	@GetMapping("damerauLevenshtein")
+	public String damerauLevenshtein(@RequestParam(value = "source", defaultValue = "") String source,
+									 @RequestParam(value = "target", defaultValue = "") String target) {
+		int distance = DamerauLevenshtein.computeDist(source, target);
+
+		return String.format("Damerau-Levenshteinova vzdálenost, zdrojový řetězec: %s," +
 						" cílový řetězec: %s, vzdálenost: %d, podobnost slov: %.2f%%.",
 				source, target, distance, LevenshteinTools.countSimilarity(source, target, distance));
 	}
