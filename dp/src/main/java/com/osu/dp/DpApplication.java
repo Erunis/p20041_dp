@@ -2,6 +2,7 @@ package com.osu.dp;
 
 import com.osu.dp.string_matching.DamerauLevenshtein;
 import com.osu.dp.string_matching.DynamicLevenshtein;
+import com.osu.dp.string_matching.LevenshteinAutomaton.LevenshteinAutomaton;
 import com.osu.dp.string_matching.LevenshteinTools;
 import com.osu.dp.string_matching.RecursiveLevenshtein;
 import org.springframework.boot.SpringApplication;
@@ -51,5 +52,23 @@ public class DpApplication {
 		return String.format("Damerau-Levenshteinova vzdálenost, zdrojový řetězec: %s," +
 						" cílový řetězec: %s, vzdálenost: %d, podobnost slov: %.2f%%.",
 				source, target, distance, LevenshteinTools.countSimilarity(source, target, distance));
+	}
+
+	@GetMapping("levenshteinAutomata")
+	public String levenshteinAutomata(@RequestParam(value = "source", defaultValue = "") String source,
+									  @RequestParam(value = "target", defaultValue = "") String target,
+									  @RequestParam(value = "distance", defaultValue = "") int distance) {
+
+		boolean result = LevenshteinAutomaton.isAccepted(source, target, distance);
+
+		if (result == true) {
+			return String.format("Levenshteinův automat pro cílové slovo: %s o maximální Levenshteinově vzdálenosti: %d" +
+					" přijal zdrojové slovo: %s.", target, distance, source);
+		}
+		else {
+			return String.format("Levenshteinův automat pro cílové slovo: %s o maximální Levenshteinově vzdálenosti: %d" +
+					" nebyl schopný přijmout zdrojové slovo: %s.", target, distance, source);
+
+		}
 	}
 }

@@ -23,6 +23,15 @@ public class LevenshteinTools {
         }
     }
 
+    public static void printMatrix(String[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
     /** Výpočet podobnosti slov */
     public static double countSimilarity(String source, String target, int distance) {
         double error = ((double) distance / Math.max(source.length(), target.length())) * 100;
