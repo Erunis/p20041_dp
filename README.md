@@ -17,10 +17,18 @@
 - Fuzzy logika
 	- Teorie fuzzy množin
 	- Využití fuzzy logiky v reálném světě
-	- Fuzzy web data mining (?)
-	- Fuzzy webový vyhledávač
-		- Principy fuzzy vyhledávání (fuzzy matching)
-		- Fuzzy logická analýza pro rozpoznávání vzorů
+	- Principy fuzzy vyhledávání (Fuzzy search)
+		- Levenshteinova vzdálenost
+		- Damerau-Levenshteinova vzdálenost
+		- Levenshteinův automat
+		- N-gram algoritmus
+	- Fuzzy konečné automaty pro porovnávání řetězců
+		- Klasický vs. Fuzzy konečný automat
+		- 
+	- Fuzzy logická analýza pro rozpoznávání vzorů
+- Teorie použité architektury
+	- Java Spring Boot
+	- ReactJS 
 - Rešerše existujících řešení (existující knihovny pro fuzzy vyhledávání)
 
 #### PRAKTICKÁ ČÁST
