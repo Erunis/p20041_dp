@@ -71,4 +71,11 @@ public class DpApplication {
 
 		}
 	}
+
+	@GetMapping("fuzzyAutomaton")
+	public String fuzzyAutomaton(@RequestParam(value = "pattern", defaultValue = "") String pattern,
+								 @RequestParam(value = "source", defaultValue = "") String source) {
+
+		return null;
+	}
 }
