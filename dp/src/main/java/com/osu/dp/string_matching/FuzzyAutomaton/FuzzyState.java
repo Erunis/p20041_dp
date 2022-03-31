@@ -1,7 +1,6 @@
 package com.osu.dp.string_matching.FuzzyAutomaton;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,31 +11,41 @@ public class FuzzyState {
     private Map<String, Integer> charMap;
     private double[][] transitionMatrix;
     private double[] initial;
+    private double[] temp;
 
-    private void init(String pattern) {
+    private void mapsInit() {
         similarityMatrix = CharMaps.setSimilarityMatrix();
 
         charMap = new HashMap<>();
         CharMaps.setCharMap(charMap);
+    }
 
+    private void init(String pattern, int i) {
         int size = pattern.length() + 1;
         transitionMatrix = new double[size][size];
 
-        initial = getInitialValue(transitionMatrix.length);
+        if (i == 0) {
+            initial = getInitialValue(transitionMatrix.length);
+        }
+
+        else {
+            initial = temp;
+        }
+
     }
 
     public double similarityFunc(String pattern, String source) {
-        init(pattern);
-        System.out.println(charMap.toString());
+        mapsInit();
 
         if (pattern.length() == source.length()) {
             for (int i = 0; i < pattern.length(); i++) {
+                init(pattern, i);
                 Integer srcId = charMap.get(Character.toString(source.charAt(i)));
                 System.out.println("initial="+Arrays.toString(initial));
 
                 for (int j = 0; j < transitionMatrix.length; j++) {
-                    for (int k = 0; k < transitionMatrix[j].length; k++) {
-                        if (j <= pattern.length() && k == j+1) {
+                    for (int k = 0; k < transitionMatrix[0].length; k++) {
+                        if (j < pattern.length() && k == j+1) {
                             Integer ptnId = charMap.get(Character.toString(pattern.charAt(j)));
                             stringSimValue = similarityMatrix[ptnId][srcId];
                         }
@@ -44,8 +53,11 @@ public class FuzzyState {
                         else {
                             stringSimValue = 0;
                         }
+                        System.out.println("sim="+stringSimValue);
 
-                        transitionMatrix[j][k] = FuzzyLogic.GodelTNorm(initial[j], stringSimValue);
+                        double[] temp = initial;
+                        transitionMatrix[j][k] = FuzzyLogic.GodelTNorm(temp[j], stringSimValue);
+                        System.out.println("init="+Arrays.toString(initial));
 
                         for (int row = 0; row < transitionMatrix.length; row++) {
                             for (int col = 0; col < transitionMatrix[row].length; col++) {
@@ -57,7 +69,7 @@ public class FuzzyState {
                     }
                 }
 
-                initial = FuzzyLogic.GodelTKonorm(transitionMatrix);
+                temp = FuzzyLogic.GodelTKonorm(transitionMatrix);
             }
 
             similarity = Arrays.stream(initial).max().getAsDouble();
