@@ -3,8 +3,8 @@ package com.osu.dp.string_matching.FuzzyAutomaton;
 import java.util.Map;
 
 public class CharMaps {
-    public static void setSimilarityMatrix(double[][] similarityMatrix) {
-        similarityMatrix = new double[][]{
+    public static double[][] setSimilarityMatrix() {
+        return new double[][]{
                 {1,   0.9,   0,  0.2,  0.1},
                 {0.9,  1,    0,  0.2,  0.1},
                 {0,    0,    1,  0.2,  0.1},

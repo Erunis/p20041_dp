@@ -2,6 +2,7 @@ package com.osu.dp;
 
 import com.osu.dp.string_matching.DamerauLevenshtein;
 import com.osu.dp.string_matching.DynamicLevenshtein;
+import com.osu.dp.string_matching.FuzzyAutomaton.FuzzyState;
 import com.osu.dp.string_matching.LevenshteinAutomaton.LevenshteinAutomaton;
 import com.osu.dp.string_matching.LevenshteinTools;
 import com.osu.dp.string_matching.RecursiveLevenshtein;
@@ -75,7 +76,9 @@ public class DpApplication {
 	@GetMapping("fuzzyAutomaton")
 	public String fuzzyAutomaton(@RequestParam(value = "pattern", defaultValue = "") String pattern,
 								 @RequestParam(value = "source", defaultValue = "") String source) {
+		FuzzyState fuzzyAutomaton = new FuzzyState();
+		double similarity = fuzzyAutomaton.similarityFunc(pattern, source);
 
-		return null;
+		return String.format("Řetězec " + source + " byl fuzzy automatem přijat ve stupni: " + similarity);
 	}
 }

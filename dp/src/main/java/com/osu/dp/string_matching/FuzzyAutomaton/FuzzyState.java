@@ -1,5 +1,7 @@
 package com.osu.dp.string_matching.FuzzyAutomaton;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,40 +10,74 @@ public class FuzzyState {
     private double similarity;
     private double[][] similarityMatrix;
     private Map<String, Integer> charMap;
+    private double[][] transitionMatrix;
+    private double[] initial;
 
-    private void init() {
-        similarityMatrix = new double[5][5];
+    private void init(String pattern) {
+        similarityMatrix = CharMaps.setSimilarityMatrix();
+
         charMap = new HashMap<>();
-        CharMaps.setSimilarityMatrix(similarityMatrix);
         CharMaps.setCharMap(charMap);
+
+        int size = pattern.length() + 1;
+        transitionMatrix = new double[size][size];
+
+        initial = getInitialValue(transitionMatrix.length);
     }
 
     public double similarityFunc(String pattern, String source) {
+        init(pattern);
+        System.out.println(charMap.toString());
+
         if (pattern.length() == source.length()) {
             for (int i = 0; i < pattern.length(); i++) {
-                int ptnId = charMap.get(pattern.charAt(i));
-                int srcId = charMap.get(source.charAt(i));
-                stringSimValue = similarityMatrix[ptnId][srcId];
+                Integer srcId = charMap.get(Character.toString(source.charAt(i)));
+                System.out.println("initial="+Arrays.toString(initial));
 
-                if (i == 0) {
-                    similarity = FuzzyLogic.GodelTNorm(1, stringSimValue);
+                for (int j = 0; j < transitionMatrix.length; j++) {
+                    for (int k = 0; k < transitionMatrix[j].length; k++) {
+                        if (j <= pattern.length() && k == j+1) {
+                            Integer ptnId = charMap.get(Character.toString(pattern.charAt(j)));
+                            stringSimValue = similarityMatrix[ptnId][srcId];
+                        }
+
+                        else {
+                            stringSimValue = 0;
+                        }
+
+                        transitionMatrix[j][k] = FuzzyLogic.GodelTNorm(initial[j], stringSimValue);
+
+                        for (int row = 0; row < transitionMatrix.length; row++) {
+                            for (int col = 0; col < transitionMatrix[row].length; col++) {
+                                System.out.print(transitionMatrix[row][col] + " ");
+                            }
+                            System.out.println();
+                        }
+                        System.out.println("..................");
+                    }
                 }
 
-                else {
-                    similarity = FuzzyLogic.GodelTNorm(similarity, stringSimValue);
-                }
+                initial = FuzzyLogic.GodelTKonorm(transitionMatrix);
             }
+
+            similarity = Arrays.stream(initial).max().getAsDouble();
         }
 
         else {
             System.out.println("Error strings not same length.");
         }
-        //kontrola, že jsou stringy stejně dlouhé, if not = error
-        //cyklus for pro průchod pattern a source stringů
-        //na i-té pozici vezme symbol pattern/source, najde jejich sourceIndex a targetIndex v HashMap
-        //similarityValue = Matrix[sourceIndex][targetIndex]
-        //se získanou similarityValue výpočet pomocí t-norem a t-konorem
 
         return similarity;
+    }
+
+    private double[] getInitialValue(int size) {
+        double[] initialVal = new double[size];
+        initialVal[0] = 1;
+
+        for (int i = 1; i < size; i++) {
+            initialVal[i] = 0;
+        }
+
+        return initialVal;
     }
 }
