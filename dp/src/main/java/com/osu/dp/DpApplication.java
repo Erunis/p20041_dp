@@ -31,7 +31,7 @@ public class DpApplication {
 		SpringApplication.run(DpApplication.class, args);
 	}
 
-	/* Example: http://localhost:8080/recursiveLevenshtein?source=robot&target=sobota */
+	/* Example: http://localhost:8080/recursiveLevenshtein?source=robot*/
 	@GetMapping("/recursiveLevenshtein")
 	public List<String> recursiveLevenshtein(@RequestParam(value = "source", defaultValue = "") String source) {
 		//sms.test();
@@ -47,8 +47,7 @@ public class DpApplication {
 		return ret;
 	}
 
-	/* Example 1: http://localhost:8080/dynamicLevenshtein?source=robot&target=sobota
-	*  Example 2: http://localhost:8080/dynamicLevenshtein?source=xamarin&target=flutter */
+	/* Example 1: http://localhost:8080/dynamicLevenshtein?source=robot*/
 	@GetMapping("/dynamicLevenshtein")
 	public List<String> dynamicLevenshtein(@RequestParam(value = "source", defaultValue = "") String source) {
 		List<String> ret = new ArrayList<>();

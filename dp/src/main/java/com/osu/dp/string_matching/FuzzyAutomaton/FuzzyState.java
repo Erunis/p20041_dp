@@ -59,19 +59,21 @@ public class FuzzyState {
                         transitionMatrix[j][k] = FuzzyLogic.GodelTNorm(temp[j], stringSimValue);
                         System.out.println("init="+Arrays.toString(initial));
 
+                        /* VÝPIS MATICE PŘECHODŮ
                         for (int row = 0; row < transitionMatrix.length; row++) {
                             for (int col = 0; col < transitionMatrix[row].length; col++) {
                                 System.out.print(transitionMatrix[row][col] + " ");
                             }
                             System.out.println();
                         }
-                        System.out.println("..................");
+                        System.out.println("..................");*/
                     }
                 }
 
                 temp = FuzzyLogic.GodelTKonorm(transitionMatrix);
             }
 
+            // jiné pro každou logiku!
             similarity = Arrays.stream(initial).max().getAsDouble();
         }
 
