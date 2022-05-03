@@ -4,6 +4,7 @@ import com.osu.dp.database.Dictionary;
 import com.osu.dp.database.DictionaryRepository;
 import com.osu.dp.string_matching.DamerauLevenshtein;
 import com.osu.dp.string_matching.DynamicLevenshtein;
+import com.osu.dp.string_matching.FuzzyAutomaton.AutomatonTest;
 import com.osu.dp.string_matching.FuzzyAutomaton.FuzzyState;
 import com.osu.dp.string_matching.LevenshteinAutomaton.LevenshteinAutomaton;
 import com.osu.dp.string_matching.LevenshteinTools;
@@ -18,12 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 @SpringBootApplication
 @RestController
 public class DpApplication {
-	/*@Autowired
-	private StringMatchService sms;*/
 	@Autowired
 	DictionaryRepository dictionaryRepository;
 
@@ -34,7 +34,7 @@ public class DpApplication {
 	/* Example: http://localhost:8080/recursiveLevenshtein?source=robot*/
 	@GetMapping("/recursiveLevenshtein")
 	public List<String> recursiveLevenshtein(@RequestParam(value = "source", defaultValue = "") String source) {
-		//sms.test();
+		source = source.toLowerCase();
 		List<String> ret = new ArrayList<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
 		for (Dictionary entry : dictionary) {
@@ -50,6 +50,7 @@ public class DpApplication {
 	/* Example 1: http://localhost:8080/dynamicLevenshtein?source=robot*/
 	@GetMapping("/dynamicLevenshtein")
 	public List<String> dynamicLevenshtein(@RequestParam(value = "source", defaultValue = "") String source) {
+		source = source.toLowerCase();
 		List<String> ret = new ArrayList<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
 		for (Dictionary entry : dictionary) {
@@ -61,8 +62,9 @@ public class DpApplication {
 		return ret;
 	}
 
-	@GetMapping("damerauLevenshtein")
+	@GetMapping("/damerauLevenshtein")
 	public List<String> damerauLevenshtein(@RequestParam(value = "source", defaultValue = "") String source) {
+		source = source.toLowerCase();
 		List<String> ret = new ArrayList<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
 		for (Dictionary entry : dictionary) {
@@ -74,10 +76,10 @@ public class DpApplication {
 		return ret;
 	}
 
-	@GetMapping("levenshteinAutomata")
+	@GetMapping("/levenshteinAutomata")
 	public List<String> levenshteinAutomata(@RequestParam(value = "source", defaultValue = "") String source,
 									  @RequestParam(value = "distance", defaultValue = "") int distance) {
-
+		source = source.toLowerCase();
 		List<String> ret = new ArrayList<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
 
@@ -98,20 +100,41 @@ public class DpApplication {
 
 	}
 
-	@GetMapping("fuzzyAutomaton")
-	public List<String> fuzzyAutomaton(@RequestParam(value = "source", defaultValue = "") String source) {
+	/* http://localhost:8080/fuzzyAutomaton?source=roboti&logic=2*/
+	@GetMapping("/fuzzyAutomaton")
+	public List<String> fuzzyAutomaton(@RequestParam(value = "source", defaultValue = "") String source,
+									   @RequestParam(value = "logic", defaultValue = "1") int logic) {
+		source = source.toLowerCase();
 		FuzzyState fuzzyAutomaton = new FuzzyState();
 		List<String> ret = new ArrayList<>();
-		HashMap<Double, String> simMap = new HashMap<>();
+		//HashMap<Double, String> simMap = new HashMap<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
 
 		for (Dictionary entry : dictionary) {
-			double similarity = fuzzyAutomaton.similarityFunc(entry.getPattern(), source);
+			double similarity = fuzzyAutomaton.similarityFunc(entry.getPattern(), source, logic);
 			ret.add(String.format("Řetězec %s pro pattern %s byl fuzzy automatem přijat ve stupni: %.2f",
 					source, entry.getPattern(), similarity));
 		}
 		return ret;
 	}
 
+	@GetMapping("/fuzzyAutShortTest")
+	public String fuzzyAutShortTest(@RequestParam(value = "source", defaultValue = "") String source,
+									@RequestParam(value = "logic", defaultValue = "1") int logic) {
+		source = source.toLowerCase();
+		AutomatonTest automatonTest = new AutomatonTest();
+		double similarity = automatonTest.simTestShort(source, logic);
 
+		return String.format("Řetězec " + source + " byl přijat ve stupni: " + similarity);
+	}
+
+	@GetMapping("/fuzzyAutLongTest")
+	public String fuzzyAutLongTest(@RequestParam(value = "source", defaultValue = "") String source,
+									@RequestParam(value = "logic", defaultValue = "1") int logic) {
+		source = source.toLowerCase();
+		AutomatonTest automatonTest = new AutomatonTest();
+		double similarity = automatonTest.simTestLong(source, logic);
+
+		return String.format("Řetězec " + source + " byl přijat ve stupni: " + similarity);
+	}
 }
