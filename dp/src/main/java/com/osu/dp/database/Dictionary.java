@@ -11,6 +11,9 @@ public class Dictionary {
     @Column(nullable = false)
     private String pattern;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean longWord;
+
     public Dictionary(String word) {
         this.pattern = word;
     }
@@ -29,5 +32,13 @@ public class Dictionary {
 
     public void setPattern(String pattern) {
         this.pattern = pattern;
+    }
+
+    public boolean isLongWord() {
+        return longWord;
+    }
+
+    public void setLongWord(boolean longWord) {
+        this.longWord = longWord;
     }
 }

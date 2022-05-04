@@ -12,14 +12,13 @@ import com.osu.dp.string_matching.RecursiveLevenshtein;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @SpringBootApplication
 @RestController
@@ -35,16 +34,39 @@ public class DpApplication {
 	@GetMapping("/recursiveLevenshtein")
 	public List<String> recursiveLevenshtein(@RequestParam(value = "source", defaultValue = "") String source) {
 		source = source.toLowerCase();
-		List<String> ret = new ArrayList<>();
+		List<String> result = new ArrayList<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
+		int n = 3;
+		List<Results> simList = new ArrayList<>();
+
+		StopWatch stopWatch = new StopWatch("Recursive Levenshtein");
+		stopWatch.start();
 		for (Dictionary entry : dictionary) {
 			int distance = RecursiveLevenshtein.computeDist(source, entry.getPattern());
-			ret.add(String.format("Levenshteinova vzdálenost pomocí rekurze, zdrojový řetězec: %s, " +
-							"cílový řetězec: %s, vzdálenost: %d, podobnost slov: %.2f%%.",
-					source, entry.getPattern(), distance, LevenshteinTools.countSimilarity(source, entry.getPattern(), distance)));
+			double similarity = LevenshteinTools.countSimilarity(source, entry.getPattern(), distance);
+
+			simList.add(new Results(entry.getPattern(), similarity, distance));
+		}
+		stopWatch.stop();
+		System.out.println(stopWatch);
+
+		Collections.sort(simList);
+		List<Results> elements;
+		if (simList.size() > n) {
+			elements = new ArrayList<>(simList.subList(0, n));
 		}
 
-		return ret;
+		else {
+			elements = new ArrayList<>();
+		}
+
+		for (Results element : elements) {
+			result.add(String.format("Levenshteinova vzdálenost pomocí rekurze, zdrojový řetězec: %s, " +
+					"cílový řetězec: %s, vzdálenost: %d, podobnost slov: %.2f%%.",
+					source, element.getPattern(), element.getDistance(), element.getSimilarity()));
+		}
+
+		return result;
 	}
 
 	@CrossOrigin(origins = "*")
@@ -92,10 +114,10 @@ public class DpApplication {
 				ret.add(String.format("Levenshteinův automat pro cílové slovo: %s o maximální Levenshteinově vzdálenosti: %d" +
 						" přijal zdrojové slovo: %s.", entry.getPattern(), distance, source));
 			}
+
 			else {
 				ret.add(String.format("Levenshteinův automat pro cílové slovo: %s o maximální Levenshteinově vzdálenosti: %d" +
 						" nebyl schopný přijmout zdrojové slovo: %s.", entry.getPattern(), distance, source));
-
 			}
 		}
 		return ret;
@@ -109,14 +131,22 @@ public class DpApplication {
 		source = source.toLowerCase();
 		FuzzyState fuzzyAutomaton = new FuzzyState();
 		List<String> ret = new ArrayList<>();
-		//HashMap<Double, String> simMap = new HashMap<>();
+		HashMap<String, Double> simMap = new HashMap<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
 
 		for (Dictionary entry : dictionary) {
 			double similarity = fuzzyAutomaton.similarityFunc(entry.getPattern(), source, logic);
-			ret.add(String.format("Řetězec %s pro pattern %s byl fuzzy automatem přijat ve stupni: %.2f",
-					source, entry.getPattern(), similarity));
+			simMap.put(entry.getPattern(), similarity);
 		}
+
+		Map<String, Double> sorted = Results.sortByValue(simMap);
+		Map<String, Double> elements = Results.getElements(sorted, 3);
+
+		for (String s : elements.keySet()) {
+			ret.add(String.format("Řetězec %s pro vzor %s byl fuzzy automatem přijat ve stupni: %.2f",
+					source, s, elements.get(s)));
+		}
+
 		return ret;
 	}
 
