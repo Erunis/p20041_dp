@@ -2,23 +2,74 @@
 <html>
     <head>
         <title>Diplomová práce P20041</title>
+        <script>
+            function showInput() {
+                document.getElementById("method").addEventListener('change', function () {
+                    var style = this.value == "levenshteinAutomata" ? 'block' : 'none';
+                    document.getElementById("levAutDistLabel").style.display = style;
+                    document.getElementById("levAutDist").style.display = style;
+                });
+            }
+
+            const buttonClick = async () => {
+                var source = document.getElementById("sourceinput").value;
+                var method = document.getElementById("method").value;
+                
+                if (method.includes("fuzzy")) {
+                    if (method == "fuzzyG") {
+                        var logic = 1;
+                    }
+                    else if (method == "fuzzyL") {
+                        var logic = 2;
+                    }
+                    else if (method == "fuzzyP") {
+                        var logic = 3;
+                    }
+                    method = "fuzzyAutomaton";
+                    const response = await fetch(`http://localhost:8080/${method}?source=${source}&logic=${logic}`);
+                    const myJson = await response.json();
+                    document.getElementById("result").value = JSON.stringify(myJson);
+                }  
+                
+                else if (method == "levenshteinAutomata") {
+                    var distance = document.getElementById("levAutDist").value;
+                    const response = await fetch(`http://localhost:8080/${method}?source=${source}&distance=${distance}`);
+                    const myJson = await response.json();
+                    document.getElementById("result").value = JSON.stringify(myJson);
+                }
+
+                else {
+                    const response = await fetch(`http://localhost:8080/${method}?source=${source}`);
+                    const myJson = await response.json();
+                    document.getElementById("result").value = JSON.stringify(myJson);
+                }
+            }
+        </script>
+
     </head>
     <body>
         <h1>Webový vyhledávač</h1>
         <label for="sourceinput">Zadejte vstupní řetězec:</label><br>
-        <textarea id="sourceinput" name="sourceinput" rows="4" cols="50">
-        </textarea><br>
+        <textarea id="sourceinput" name="sourceinput" rows="4" cols="50"></textarea><br>
 
         <label for="method">Vyberte metodu pro výpočet:</label><br>
-        <select name="method" id="method">
-            <option value="leven">Levenshteinova vzdálenost</option>
-            <option value="damerau-leven">Damerau-Levenshteinova vzdálenost</option>
-            <option value="levenaut">Levenshteiův automat</option>
-            <option value="fuzzyg">Fuzzy automat – Gödelova logika</option>
-            <option value="fuzzyl">Fuzzy automat – Łukasiewiczova logika</option>
-            <option value="fuzzyp">Fuzzy automat – Pavelkova logika</option>
+        <select id="method" onchange="showInput()">
+            <option value="recursiveLevenshtein">Levenshteinova vzdálenost – rekurzivně</option>
+            <option value="dynamicLevenshtein">Levenshteinova vzdálenost – dynamicky</option>
+            <option value="damerauLevenshtein">Damerau-Levenshteinova vzdálenost</option>
+            <option value="levenshteinAutomata">Levenshteinův automat</option>
+            <option value="fuzzyG">Fuzzy automat – Gödelova logika</option>
+            <option value="fuzzyL">Fuzzy automat – Łukasiewiczova logika</option>
+            <option value="fuzzyP">Fuzzy automat – Pavelkova logika</option>
         </select><br>
 
-        <button type="button">Vyhledej</button>
+        <label id="levAutDistLabel" for="levAutDist" style="display:none;">Zadejte vzdálenost pro Levenshteinův automat:</label>
+        <textarea id="levAutDist" name="levAutDist" rows="2" cols="50" style="display:none;"></textarea><br>
+
+        <button type="button" onclick="buttonClick()">Vyhledej</button><br>
+
+        <label for="result">Výsledek výpočtu:</label>
+        <textarea id="result" name="result" rows="20" cols="50"></textarea>
+
     </body>
 </html>

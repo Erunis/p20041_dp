@@ -12,6 +12,7 @@ import com.osu.dp.string_matching.RecursiveLevenshtein;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 @SpringBootApplication
 @RestController
@@ -31,7 +31,7 @@ public class DpApplication {
 		SpringApplication.run(DpApplication.class, args);
 	}
 
-	/* Example: http://localhost:8080/recursiveLevenshtein?source=robot*/
+	@CrossOrigin(origins = "*")
 	@GetMapping("/recursiveLevenshtein")
 	public List<String> recursiveLevenshtein(@RequestParam(value = "source", defaultValue = "") String source) {
 		source = source.toLowerCase();
@@ -47,7 +47,7 @@ public class DpApplication {
 		return ret;
 	}
 
-	/* Example 1: http://localhost:8080/dynamicLevenshtein?source=robot*/
+	@CrossOrigin(origins = "*")
 	@GetMapping("/dynamicLevenshtein")
 	public List<String> dynamicLevenshtein(@RequestParam(value = "source", defaultValue = "") String source) {
 		source = source.toLowerCase();
@@ -62,6 +62,7 @@ public class DpApplication {
 		return ret;
 	}
 
+	@CrossOrigin(origins = "*")
 	@GetMapping("/damerauLevenshtein")
 	public List<String> damerauLevenshtein(@RequestParam(value = "source", defaultValue = "") String source) {
 		source = source.toLowerCase();
@@ -76,9 +77,10 @@ public class DpApplication {
 		return ret;
 	}
 
+	@CrossOrigin(origins = "*")
 	@GetMapping("/levenshteinAutomata")
 	public List<String> levenshteinAutomata(@RequestParam(value = "source", defaultValue = "") String source,
-									  @RequestParam(value = "distance", defaultValue = "") int distance) {
+									  @RequestParam(value = "distance", defaultValue = "2") int distance) {
 		source = source.toLowerCase();
 		List<String> ret = new ArrayList<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
@@ -100,7 +102,7 @@ public class DpApplication {
 
 	}
 
-	/* http://localhost:8080/fuzzyAutomaton?source=roboti&logic=2*/
+	@CrossOrigin(origins = "*")
 	@GetMapping("/fuzzyAutomaton")
 	public List<String> fuzzyAutomaton(@RequestParam(value = "source", defaultValue = "") String source,
 									   @RequestParam(value = "logic", defaultValue = "1") int logic) {
@@ -118,6 +120,7 @@ public class DpApplication {
 		return ret;
 	}
 
+	@CrossOrigin(origins = "*")
 	@GetMapping("/fuzzyAutShortTest")
 	public String fuzzyAutShortTest(@RequestParam(value = "source", defaultValue = "") String source,
 									@RequestParam(value = "logic", defaultValue = "1") int logic) {
@@ -128,6 +131,7 @@ public class DpApplication {
 		return String.format("Řetězec " + source + " byl přijat ve stupni: " + similarity);
 	}
 
+	@CrossOrigin(origins = "*")
 	@GetMapping("/fuzzyAutLongTest")
 	public String fuzzyAutLongTest(@RequestParam(value = "source", defaultValue = "") String source,
 									@RequestParam(value = "logic", defaultValue = "1") int logic) {
