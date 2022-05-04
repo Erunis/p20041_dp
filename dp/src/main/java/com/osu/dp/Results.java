@@ -9,10 +9,10 @@ public class Results implements Comparable<Results>{
     double similarity;
     int distance;
 
-    public Results(String pattern, double similarity) {
+    public Results(String pattern, int distance) {
         this.pattern = pattern;
         this.similarity = similarity;
-        this.distance = 0;
+        this.distance = distance;
     }
 
     public Results(String pattern, double similarity, int distance) {
@@ -25,24 +25,12 @@ public class Results implements Comparable<Results>{
         return pattern;
     }
 
-    public void setPattern(String pattern) {
-        this.pattern = pattern;
-    }
-
     public double getSimilarity() {
         return similarity;
     }
 
-    public void setSimilarity(double similarity) {
-        this.similarity = similarity;
-    }
-
     public int getDistance() {
         return distance;
-    }
-
-    public void setDistance(int distance) {
-        this.distance = distance;
     }
 
     @Override

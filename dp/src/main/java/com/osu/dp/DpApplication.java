@@ -73,30 +73,78 @@ public class DpApplication {
 	@GetMapping("/dynamicLevenshtein")
 	public List<String> dynamicLevenshtein(@RequestParam(value = "source", defaultValue = "") String source) {
 		source = source.toLowerCase();
-		List<String> ret = new ArrayList<>();
+		List<String> result = new ArrayList<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
+		int n = 3;
+		List<Results> simList = new ArrayList<>();
+
+		StopWatch stopWatch = new StopWatch("Dynamic Levenshtein");
+		stopWatch.start();
 		for (Dictionary entry : dictionary) {
 			int distance = DynamicLevenshtein.computeDist(source, entry.getPattern());
-			ret.add(String.format("Levenshteinova vzdálenost pomocí matic, zdrojový řetězec: %s," +
-							" cílový řetězec: %s, vzdálenost: %d, podobnost slov: %.2f%%.",
-					source, entry.getPattern(), distance, LevenshteinTools.countSimilarity(source, entry.getPattern(), distance)));
+			double similarity = LevenshteinTools.countSimilarity(source, entry.getPattern(), distance);
+
+			simList.add(new Results(entry.getPattern(), similarity, distance));
 		}
-		return ret;
+		stopWatch.stop();
+		System.out.println(stopWatch);
+
+		Collections.sort(simList);
+		List<Results> elements;
+		if (simList.size() > n) {
+			elements = new ArrayList<>(simList.subList(0, n));
+		}
+
+		else {
+			elements = new ArrayList<>();
+		}
+
+		for (Results element : elements) {
+			result.add(String.format("Levenshteinova vzdálenost dynamicky, zdrojový řetězec: %s, " +
+							"cílový řetězec: %s, vzdálenost: %d, podobnost slov: %.2f%%.",
+					source, element.getPattern(), element.getDistance(), element.getSimilarity()));
+		}
+
+		return result;
 	}
 
 	@CrossOrigin(origins = "*")
 	@GetMapping("/damerauLevenshtein")
 	public List<String> damerauLevenshtein(@RequestParam(value = "source", defaultValue = "") String source) {
 		source = source.toLowerCase();
-		List<String> ret = new ArrayList<>();
+		List<String> result = new ArrayList<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
+		int n = 3;
+		List<Results> simList = new ArrayList<>();
+
+		StopWatch stopWatch = new StopWatch("Damerau-Levenshtein");
+		stopWatch.start();
 		for (Dictionary entry : dictionary) {
 			int distance = DamerauLevenshtein.computeDist(source, entry.getPattern());
-			ret.add(String.format("Damerau-Levenshteinova vzdálenost, zdrojový řetězec: %s," +
-							" cílový řetězec: %s, vzdálenost: %d, podobnost slov: %.2f%%.",
-					source, entry.getPattern(), distance, LevenshteinTools.countSimilarity(source, entry.getPattern(), distance)));
+			double similarity = LevenshteinTools.countSimilarity(source, entry.getPattern(), distance);
+
+			simList.add(new Results(entry.getPattern(), similarity, distance));
 		}
-		return ret;
+		stopWatch.stop();
+		System.out.println(stopWatch);
+
+		Collections.sort(simList);
+		List<Results> elements;
+		if (simList.size() > n) {
+			elements = new ArrayList<>(simList.subList(0, n));
+		}
+
+		else {
+			elements = new ArrayList<>();
+		}
+
+		for (Results element : elements) {
+			result.add(String.format("Damerau-Levenshteinova vzdálenost, zdrojový řetězec: %s, " +
+							"cílový řetězec: %s, vzdálenost: %d, podobnost slov: %.2f%%.",
+					source, element.getPattern(), element.getDistance(), element.getSimilarity()));
+		}
+
+		return result;
 	}
 
 	@CrossOrigin(origins = "*")
@@ -104,24 +152,28 @@ public class DpApplication {
 	public List<String> levenshteinAutomata(@RequestParam(value = "source", defaultValue = "") String source,
 									  @RequestParam(value = "distance", defaultValue = "2") int distance) {
 		source = source.toLowerCase();
-		List<String> ret = new ArrayList<>();
+		List<String> result = new ArrayList<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
 
-
+		StopWatch stopWatch = new StopWatch("Levenshtein automata");
+		stopWatch.start();
 		for (Dictionary entry : dictionary) {
-			boolean result = LevenshteinAutomaton.isAccepted(source, entry.getPattern(), distance);
-			if (result == true) {
-				ret.add(String.format("Levenshteinův automat pro cílové slovo: %s o maximální Levenshteinově vzdálenosti: %d" +
+			boolean ret = LevenshteinAutomaton.isAccepted(source, entry.getPattern(), distance);
+			if (ret == true) {
+				result.add(String.format("Levenshteinův automat pro vzorové slovo: %s o maximální Levenshteinově vzdálenosti: %d" +
 						" přijal zdrojové slovo: %s.", entry.getPattern(), distance, source));
 			}
 
 			else {
-				ret.add(String.format("Levenshteinův automat pro cílové slovo: %s o maximální Levenshteinově vzdálenosti: %d" +
-						" nebyl schopný přijmout zdrojové slovo: %s.", entry.getPattern(), distance, source));
+				System.out.println(String.format("Levenshteinův automat pro cílové slovo: %s o maximální " +
+						"Levenshteinově vzdálenosti: %d nebyl schopný přijmout zdrojové slovo: %s.",
+						entry.getPattern(), distance, source));
 			}
 		}
-		return ret;
+		stopWatch.stop();
+		System.out.println(stopWatch);
 
+		return result;
 	}
 
 	@CrossOrigin(origins = "*")
