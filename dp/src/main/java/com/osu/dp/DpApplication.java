@@ -223,4 +223,12 @@ public class DpApplication {
 
 		return String.format("Řetězec " + source + " byl přijat ve stupni: " + similarity);
 	}
+
+	@CrossOrigin(origins = "*")
+	@GetMapping("/allData")
+	public List<Dictionary> fetchData() {
+		List<Dictionary> dictionary = dictionaryRepository.findAll();
+
+		return dictionary;
+	}
 }

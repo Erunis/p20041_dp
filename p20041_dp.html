@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Diplomová práce P20041</title>
+        <title>Diplomová práce P20041 – vlastní knihovna metod</title>
         <script>
             function showInput() {
                 document.getElementById("method").addEventListener('change', function () {
@@ -44,16 +44,25 @@
                     document.getElementById("result").value = JSON.stringify(myJson);
                 }
             }
+
+            const fetchData = async () => {
+                const response = await fetch(`http://localhost:8080/allData`);
+                const data = await response.json();
+            }
+        </script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.js">
+
         </script>
 
     </head>
     <body>
-        <h1>Webový vyhledávač</h1>
+        <h1>Webový vyhledávač – vlastní knihovna metod</h1>
         <label for="sourceinput">Zadejte vstupní řetězec:</label><br>
         <textarea id="sourceinput" name="sourceinput" rows="4" cols="50"></textarea><br>
 
         <label for="method">Vyberte metodu pro výpočet:</label><br>
-        <select id="method" onchange="showInput()">
+        <select id="method" onclick="showInput()">
             <option value="recursiveLevenshtein">Levenshteinova vzdálenost – rekurzivně</option>
             <option value="dynamicLevenshtein">Levenshteinova vzdálenost – dynamicky</option>
             <option value="damerauLevenshtein">Damerau-Levenshteinova vzdálenost</option>
@@ -68,7 +77,7 @@
 
         <button type="button" onclick="buttonClick()">Vyhledej</button><br>
 
-        <label for="result">Výsledek výpočtu:</label>
+        <label for="result">Výsledek výpočtu:</label><br>
         <textarea id="result" name="result" rows="20" cols="50"></textarea>
 
     </body>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Diplomová práce P20041 – externí knihovny</title>
+        <script defer>
+            let txt = "";
+            const fetchData = async () => {
+                const response = await fetch(`http://localhost:8080/allData`);
+                const data = await response.json();
+
+                return data;
+            }
+
+            const buttonClick = async () => {
+                var source = document.getElementById("sourceinput").value;
+                var method = document.getElementById("method").value;
+
+                const data = await fetchData();
+                const pattern = data.map(a => a.pattern);
+                
+                if (method == "fusejs") {
+                    console.time('fusejs')
+                    var result = fuseJS(source, pattern);
+                    console.timeEnd('fusejs')
+                }  
+
+                else if (method == "fuzzysetjs") {
+                    console.time('fuzzysetjs')
+                    counter = FuzzySet(pattern);
+                    var result = counter.get(source);
+                    console.timeEnd('fuzzysetjs')
+                }
+
+                else if (method == "fuzzyjs") {
+                    console.time('fuzzyjs')
+                    /* Funguje na základě napovídání podle zadaného source, nevypočítává podobnost. */
+                    var result = fuzzy.filter(source, pattern);
+                    console.timeEnd('fuzzyjs')
+                }
+
+                else if (method == "stringsim") {
+                    console.time('stringsim')
+                    var result = ""
+                    for (const element of pattern) {
+                        var value = stringSimilarity.compareTwoStrings(source, element);
+                        result += " pattern: " + element + ", value: " + value + ";";
+                    }
+                    console.timeEnd('stringsim')
+                }
+
+                else if (method == "fuzzball") {
+                    console.time('fuzzball')
+                    var result = fuzzball.extract(source, pattern);
+                    console.timeEnd('fuzzball')
+                }
+
+                else if (method == "fuzzysort") {
+                    console.time('fuzzysort')
+                    /* Funguje na základě napovídání podle zadaného source, nevypočítává podobnost. */
+                    var result = fuzzysort.go(source, pattern);
+                    console.timeEnd('fuzzysort')
+                }
+
+                else {
+                    console.time('fuzzysearchjs')
+                    var fuzzySearch = new FuzzySearch(pattern, {'minimumScore': 0});
+                    fuzzySearch.addModule(levenshteinFS({'maxDistanceTolerance': 3, 'factor': 1}));
+
+                    var result = fuzzySearch.search(source);
+                    console.timeEnd('fuzzysearchjs')
+                }
+
+                document.getElementById("result").value = JSON.stringify(result);
+            }
+
+            function fuseJS(source, data) {
+                const options = {
+                    includeScore: true,
+                    keys: ['pattern']
+                }
+
+                const fuse = new Fuse(data, options);
+                const result = fuse.search(source);
+
+                return result;
+            }
+        </script>
+        
+        <script defer src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.js"></script>
+        <script defer src="fuzzyset.js"></script>
+        <script defer src="fuzzy.js"></script>
+        <script src="https://unpkg.com/string-similarity/umd/string-similarity.min.js"></script>
+        <script defer src="fuzzball.umd.min.js"></script>
+        <script defer src="https://rawgit.com/farzher/fuzzysort/master/fuzzysort.js"></script>
+        <script defer src="FuzzySearch.js"></script>
+    </head>
+
+    <body>
+        <h1>Webový vyhledávač – externí knihovny</h1>
+        <label for="sourceinput">Zadejte vstupní řetězec:</label><br>
+        <textarea id="sourceinput" name="sourceinput" rows="4" cols="50"></textarea><br>
+
+        <label for="method">Vyberte metodu pro výpočet:</label><br>
+        <select id="method">
+            <option value="fusejs">Fuse.js</option>
+            <option value="fuzzysetjs">Fuzzyset.js</option>
+            <option value="fuzzyjs">Fuzzy.js</option>
+            <option value="stringsim">String-similarity</option>
+            <option value="fuzzball">Fuzzball</option>
+            <option value="fuzzysort">Fuzzysort</option>
+            <option value="fuzzysearchjs">FuzzySearchJS</option>
+        </select><br>
+
+        <button type="button" onclick="buttonClick()">Vyhledej</button><br>
+
+        <label for="result">Výsledek výpočtu:</label><br>
+        <textarea id="result" name="result" rows="20" cols="50"></textarea><br>
+
+        <label for="speed">Rychlost výpočtu:</label><br>
+        <textarea id="speed" name="speed" rows="2" cols="50"></textarea>
+
+    </body>
+</html>
