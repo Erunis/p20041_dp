@@ -38,12 +38,13 @@ public class Position implements Comparable<Position> {
         private final int INDEX_OFFSET;
         private final int EDITS_COUNT_OFFSET;
 
-        Transitions(int iOffset, int eOffset) {
+        Transitions(int iOffset, int eOffset) { //konstruktor pro zadávání offsetů pro index pozice v automatu a předpokládaný počet edit operations
             INDEX_OFFSET = iOffset; EDITS_COUNT_OFFSET = eOffset;
         }
 
+        /* V případě operace mazání je potřeba "posunout" celé slovo */
         public Position execute(Position p, int hitIndex) {
-            if(!this.equals(FAILURE)) {
+            if (!this.equals(FAILURE)) {
                 int newI = p.getIndex() + (this.equals(DELETION) ? hitIndex + 1 : INDEX_OFFSET);
                 int newE = p.getEditsCount() + (this.equals(DELETION) ? (hitIndex + 1) - 1 : EDITS_COUNT_OFFSET);
                 return new Position(newI, newE);
@@ -131,14 +132,14 @@ public class Position implements Comparable<Position> {
         Transitions[] transition = getTransition(levDistRatio, bVTransType, idType);
         HashSet<Position> newPositionHSet = new HashSet<>();
 
-        for(Transitions current : transition) {
+        for (Transitions current : transition) {
             Position transitionPosition = current.execute(this, index);
-            if(transitionPosition != null) {
+            if (transitionPosition != null) {
                 newPositionHSet.add(transitionPosition);
             }
         }
 
-        if(!newPositionHSet.isEmpty()) {
+        if (!newPositionHSet.isEmpty()) {
             Position[] positionArray = newPositionHSet.toArray(new Position[newPositionHSet.size()]);
             Arrays.sort(positionArray);
             return new State(positionArray);
@@ -152,7 +153,7 @@ public class Position implements Comparable<Position> {
         int firstIndex;
         BitVector bitVector;
 
-        if(bitVectorIndex < parentBitVector.getBitSetSize()) {
+        if (bitVectorIndex < parentBitVector.getBitSetSize()) {
             bitVectorSize = Math.min(levenshteinDist - editsCount + 1, parentBitVector.getBitSetSize() - bitVectorIndex);
             bitVector = parentBitVector.get(bitVectorIndex, bitVectorIndex + bitVectorSize);
             firstIndex = bitVector.nextSetBit(0);

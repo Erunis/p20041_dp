@@ -55,8 +55,7 @@ public class State {
         BitVector bitVector = getBitVector(source, targetChar, levenshteinDist); //převod na bit-vektorovou reprezentaci pro NULA
 
         //provedení všech přechodů do dalších stavů, které se přidají do statesHSet
-        for(Position position : positions)
-        {
+        for(Position position : positions) {
             State transitionState = position.transition(levenshteinDist, position.getIndex() - index, bitVector);
             if(transitionState != null) {
                 statesHSet.add(transitionState);
@@ -74,9 +73,8 @@ public class State {
         BitVector bitVector = new BitVector(bitVectorSize); //vytvoření bit-vektorové reprezentace
 
         /* Cyklus prochází znaky v sourceSub a do bit-vektoru nastavuje 1, pokud se znak rovná vybranému znaku cílového řetězce, v opačném případě nastavuje 0. */
-        for(int i = 0; i < bitVectorSize; i++) {
-            if(sourceSub.charAt(i) == targetChar)
-                bitVector.set(i);
+        for (int i = 0; i < bitVectorSize; i++) {
+            if (sourceSub.charAt(i) == targetChar) bitVector.set(i);
         }
 
         return bitVector;

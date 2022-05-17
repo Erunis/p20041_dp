@@ -13,7 +13,7 @@ public class LevenshteinAutomaton {
     public static boolean isAccepted(String source, String target, int distance) {
         State currentState = initialState;
 
-        for(int i = 0; i < target.length(); i++) {
+        for (int i = 0; i < target.length(); i++) {
             currentState = currentState.transition(source, target.charAt(i), distance);
             if (currentState == null) {
                 return false;
@@ -26,9 +26,9 @@ public class LevenshteinAutomaton {
     /** Metoda pro zjištění, jestli je aktuální stav stavem akceptujícím řetězec. */
     public static boolean isAcceptingState(State state, int sourceLength, int levenshteinDist)
     {
-        for(Position position : state.getPositions())
+        for (Position position : state.getPositions())
         {
-            if(isAcceptingPosition(position, sourceLength, levenshteinDist)) {
+            if (isAcceptingPosition(position, sourceLength, levenshteinDist)) {
                 return true;
             }
         }
