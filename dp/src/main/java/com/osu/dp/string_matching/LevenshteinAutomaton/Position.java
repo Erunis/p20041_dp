@@ -44,8 +44,8 @@ public class Position implements Comparable<Position> {
 
         public Position execute(Position p, int hitIndex) {
             if(!this.equals(FAILURE)) {
-                int newI = p.getIndex() + (this.equals(DELETION) ? hitIndex + 1 : INDEX_OFFSET);        //for deletion, newI represents the # of boundaries to hitIndex (0-based arrays, so we require +1)
-                int newE = p.getEditsCount() + (this.equals(DELETION) ? (hitIndex + 1) - 1 : EDITS_COUNT_OFFSET);  //for deletion, newE represents the # of boundaries up to but not including hitIndex (0-based arrays, so simply hitIndex)
+                int newI = p.getIndex() + (this.equals(DELETION) ? hitIndex + 1 : INDEX_OFFSET);
+                int newE = p.getEditsCount() + (this.equals(DELETION) ? (hitIndex + 1) - 1 : EDITS_COUNT_OFFSET);
                 return new Position(newI, newE);
             }
             else {

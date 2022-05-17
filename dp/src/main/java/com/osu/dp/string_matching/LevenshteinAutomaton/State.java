@@ -66,9 +66,7 @@ public class State {
         return (statesHSet.isEmpty() ? null : new State(statesHSet, levenshteinDist));
     }
 
-    /**
-     * Procures an object representation of the characteristic vector of this State's relevant subword.
-     */
+    /** Metoda pro převedení řetězců do jejich bit-vektorové reprezentace pro jednodušší práci pro počítač. */
     public BitVector getBitVector(String source, char targetChar, int levenshteinDist) {
         int minIndex = positions[0].getIndex();
         int bitVectorSize = Math.min(2 * levenshteinDist + 1, source.length() - minIndex);
