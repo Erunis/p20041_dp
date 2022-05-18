@@ -4,8 +4,8 @@ import com.osu.dp.database.Dictionary;
 import com.osu.dp.database.DictionaryRepository;
 import com.osu.dp.string_matching.DamerauLevenshtein;
 import com.osu.dp.string_matching.DynamicLevenshtein;
-import com.osu.dp.string_matching.FuzzyAutomaton.AutomatonTest;
 import com.osu.dp.string_matching.FuzzyAutomaton.FuzzyState;
+import com.osu.dp.string_matching.FuzzyAutomaton.Results;
 import com.osu.dp.string_matching.LevenshteinAutomaton.LevenshteinAutomaton;
 import com.osu.dp.string_matching.LevenshteinTools;
 import com.osu.dp.string_matching.RecursiveLevenshtein;
@@ -192,43 +192,20 @@ public class DpApplication {
 		}
 
 		Map<String, Double> sorted = Results.sortByValue(simMap);
-		Map<String, Double> elements = Results.getElements(sorted, 3);
+		int count = 0;
+		int elementsToReturn = 3;
 
-		for (String s : elements.keySet()) {
-			ret.add(String.format("Řetězec %s pro vzor %s byl fuzzy automatem přijat ve stupni: %.2f",
-					source, s, elements.get(s)));
+		for (String s : sorted.keySet()) {
+			if (count < elementsToReturn) {
+				ret.add(String.format("Řetězec %s pro vzor %s byl fuzzy automatem přijat ve stupni: %.2f",
+						source, s, sorted.get(s)));
+			}
+			else {
+				break;
+			}
+			count++;
 		}
 
 		return ret;
-	}
-
-	@CrossOrigin(origins = "*")
-	@GetMapping("/fuzzyAutShortTest")
-	public String fuzzyAutShortTest(@RequestParam(value = "source", defaultValue = "") String source,
-									@RequestParam(value = "logic", defaultValue = "1") int logic) {
-		source = source.toLowerCase();
-		AutomatonTest automatonTest = new AutomatonTest();
-		double similarity = automatonTest.simTestShort(source, logic);
-
-		return String.format("Řetězec " + source + " byl přijat ve stupni: " + similarity);
-	}
-
-	@CrossOrigin(origins = "*")
-	@GetMapping("/fuzzyAutLongTest")
-	public String fuzzyAutLongTest(@RequestParam(value = "source", defaultValue = "") String source,
-									@RequestParam(value = "logic", defaultValue = "1") int logic) {
-		source = source.toLowerCase();
-		AutomatonTest automatonTest = new AutomatonTest();
-		double similarity = automatonTest.simTestLong(source, logic);
-
-		return String.format("Řetězec " + source + " byl přijat ve stupni: " + similarity);
-	}
-
-	@CrossOrigin(origins = "*")
-	@GetMapping("/allData")
-	public List<Dictionary> fetchData() {
-		List<Dictionary> dictionary = dictionaryRepository.findAll();
-
-		return dictionary;
 	}
 }

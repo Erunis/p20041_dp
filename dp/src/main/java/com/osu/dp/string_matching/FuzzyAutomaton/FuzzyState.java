@@ -20,12 +20,12 @@ public class FuzzyState {
         CharMaps.setCharMap(charMap);
     }
 
-    private void init(String pattern, int i) {
-        int size = pattern.length() + 1;
+    private void init(String str, int i) {
+        int size = str.length() + 1;
         transitionMatrix = new double[size][size];
 
         if (i == 0) {
-            initial = getInitialValue(transitionMatrix.length);
+            initial = getInitValue(size);
         }
 
         else {
@@ -36,44 +36,46 @@ public class FuzzyState {
     public double similarityFunc(String pattern, String source, int logic) {
         mapsInit();
 
+        return similarityCount(source, logic, pattern);
+    }
+
+    private double similarityCount(String source, int logic, String pattern) {
         if (pattern.length() == source.length()) {
             for (int i = 0; i < pattern.length(); i++) {
                 init(pattern, i);
                 countSimilarity(pattern, source, logic, i);
             }
 
-            countTKonorm(logic);
+            countTKonorm(source, pattern, logic);
+        }
+
+        else if (pattern.length() > source.length()) {
+            for (int i = 0; i < source.length(); i++) {
+                init(source, i);
+                countSimilarity(pattern, source, logic, i);
+            }
+
+            countTKonorm(source, pattern, logic);
+        }
+
+        else if (source.length() == pattern.length() + 1) {
+            pattern = pattern + "#";
+            for (int i = 0; i < source.length(); i++) {
+                init(pattern, i);
+                countSimilarity(pattern, source, logic, i);
+            }
+
+            countTKonorm(source, pattern, logic);
         }
 
         else {
-            System.out.println("Error strings not same length.");
+            System.out.println("Something went wrong.");
         }
 
         return similarity;
     }
 
-    private double[] getInitialValue(int size) {
-        double[] initialVal = new double[size];
-        initialVal[0] = 1;
-
-        for (int i = 1; i < size; i++) {
-            initialVal[i] = 0;
-        }
-
-        return initialVal;
-    }
-
-    private double getSimilarity(double[] array) {
-        double similarity = array[0];
-
-        for (int i = 1; i < array.length; i++) {
-            similarity = (similarity + array[i]) - (similarity * array[i]);
-        }
-
-        return similarity;
-    }
-
-    private void countSimilarity(String pattern, String source, int logic, int i) {
+    public void countSimilarity(String pattern, String source, int logic, int i) {
         Integer srcId = charMap.get(Character.toString(source.charAt(i)));
         System.out.println("initial=" + Arrays.toString(initial));
 
@@ -82,9 +84,12 @@ public class FuzzyState {
                 if (j < pattern.length() && k == j + 1) {
                     Integer ptnId = charMap.get(Character.toString(pattern.charAt(j)));
                     stringSimValue = similarityMatrix[ptnId][srcId];
-                } else {
+                }
+
+                else if (j == 0) {
                     stringSimValue = 0;
                 }
+
                 System.out.println("sim=" + stringSimValue);
 
                 double[] temp = initial;
@@ -97,6 +102,13 @@ public class FuzzyState {
                 }
 
                 System.out.println("init=" + Arrays.toString(initial));
+                for (int row = 0; row < transitionMatrix.length; row++) {
+                    for (int col = 0; col < transitionMatrix[row].length; col++) {
+                        System.out.print(transitionMatrix[row][col] + " ");
+                    }
+                    System.out.println();
+                }
+                System.out.println(".....................");
             }
         }
 
@@ -108,12 +120,56 @@ public class FuzzyState {
         }
     }
 
-    private void countTKonorm(int logic) {
+    public void countTKonorm(String source, String pattern, int logic) {
+        double[] ret = new double[]{};
+        if (pattern.length() > 3 && source.length() > 3) {
+            if (source.length() <= pattern.length()) {
+                ret = new double[2];
+                ret[0] = initial[initial.length-2];
+                ret[1] = initial[initial.length-1];
+            }
+
+            else if (source.length() == pattern.length()+1) {
+                ret = new double[3];
+                ret[0] = initial[initial.length-3];
+                ret[1] = initial[initial.length-2];
+                ret[1] = initial[initial.length-1];
+                System.out.println(Arrays.toString(ret));
+            }
+        }
+
+        else {
+            ret = initial;
+        }
+
         switch (logic) {
-            case 1 -> similarity = Arrays.stream(initial).max().getAsDouble();
-            case 2 -> similarity = Math.min(1, Arrays.stream(initial).sum());
-            case 3 -> similarity = getSimilarity(initial);
+            case 1 -> similarity = Arrays.stream(ret).max().getAsDouble();
+            case 2 -> similarity = Math.min(1, Arrays.stream(ret).sum());
+            case 3 -> similarity = getSimilarity(ret);
             default -> System.out.println("Typed logic does not exist.");
         }
+    }
+
+    private double getSimilarity(double[] array) {
+        double similarity = array[0];
+
+        for (int i = 1; i < array.length; i++) {
+            similarity = (similarity + array[i]) - (similarity * array[i]);
+        }
+
+        return similarity;
+    }
+
+    private double[] getInitValue (int size) {
+        double[] initialVal = new double[size];
+        initialVal[0] = 1;
+        initialVal[1] = 0.8;
+        initialVal[2] = 0.4;
+
+        for (int i = 3; i < size; i++) {
+            initialVal[i] = 0;
+        }
+
+        return initialVal;
     }
 }

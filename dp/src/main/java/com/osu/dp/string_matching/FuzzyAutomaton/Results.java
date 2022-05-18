@@ -1,4 +1,4 @@
-package com.osu.dp;
+package com.osu.dp.string_matching.FuzzyAutomaton;
 
 import java.util.*;
 
@@ -54,13 +54,5 @@ public class Results implements Comparable<Results>{
             temp.put(aa.getKey(), aa.getValue());
         }
         return temp;
-    }
-
-    public static Map<String,Double> getElements(Map<String,Double> sortedMap, int elementsToReturn) {
-        return sortedMap.entrySet()
-                .stream()
-                .limit(elementsToReturn)
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (v1,v2) -> v1, TreeMap::new));
     }
 }
