@@ -33,20 +33,20 @@ public class FuzzyState {
         }
     }
 
-    public double similarityFunc(String pattern, String source, int logic) {
+    public double similarityFunc(String source, String pattern, int logic) {
         mapsInit();
 
-        return similarityCount(source, logic, pattern);
+        return getSimilarity(source, logic, pattern);
     }
 
-    private double similarityCount(String source, int logic, String pattern) {
+    private double getSimilarity(String source, int logic, String pattern) {
         if (pattern.length() == source.length()) {
             for (int i = 0; i < pattern.length(); i++) {
                 init(pattern, i);
                 countSimilarity(pattern, source, logic, i);
             }
 
-            countTKonorm(source, pattern, logic);
+            getResult(source, pattern, logic);
         }
 
         else if (pattern.length() > source.length()) {
@@ -55,7 +55,7 @@ public class FuzzyState {
                 countSimilarity(pattern, source, logic, i);
             }
 
-            countTKonorm(source, pattern, logic);
+            getResult(source, pattern, logic);
         }
 
         else if (source.length() == pattern.length() + 1) {
@@ -65,11 +65,12 @@ public class FuzzyState {
                 countSimilarity(pattern, source, logic, i);
             }
 
-            countTKonorm(source, pattern, logic);
+            getResult(source, pattern, logic);
         }
 
         else {
-            System.out.println("Something went wrong.");
+            System.out.println("Source word is too long.");
+            similarity = 0;
         }
 
         return similarity;
@@ -77,7 +78,7 @@ public class FuzzyState {
 
     public void countSimilarity(String pattern, String source, int logic, int i) {
         Integer srcId = charMap.get(Character.toString(source.charAt(i)));
-        System.out.println("initial=" + Arrays.toString(initial));
+        //System.out.println("initial=" + Arrays.toString(initial));
 
         for (int j = 0; j < transitionMatrix.length; j++) {
             for (int k = 0; k < transitionMatrix[0].length; k++) {
@@ -90,7 +91,7 @@ public class FuzzyState {
                     stringSimValue = 0;
                 }
 
-                System.out.println("sim=" + stringSimValue);
+                //System.out.println("sim=" + stringSimValue);
 
                 double[] temp = initial;
 
@@ -101,14 +102,15 @@ public class FuzzyState {
                     default -> System.out.println("Typed logic does not exist.");
                 }
 
-                System.out.println("init=" + Arrays.toString(initial));
+                /**Výpis výpočetní matice transitionMatrix */
+                /*System.out.println("init=" + Arrays.toString(initial));
                 for (int row = 0; row < transitionMatrix.length; row++) {
                     for (int col = 0; col < transitionMatrix[row].length; col++) {
                         System.out.print(transitionMatrix[row][col] + " ");
                     }
                     System.out.println();
                 }
-                System.out.println(".....................");
+                System.out.println(".....................");*/
             }
         }
 
@@ -118,9 +120,10 @@ public class FuzzyState {
             case 3 -> temp = FuzzyLogic.PavelkaTKonorm(transitionMatrix);
             default -> System.out.println("Typed logic does not exist.");
         }
+        initial = temp;
     }
 
-    public void countTKonorm(String source, String pattern, int logic) {
+    public void getResult(String source, String pattern, int logic) {
         double[] ret = new double[]{};
         if (pattern.length() > 3 && source.length() > 3) {
             if (source.length() <= pattern.length()) {
@@ -133,7 +136,7 @@ public class FuzzyState {
                 ret = new double[3];
                 ret[0] = initial[initial.length-3];
                 ret[1] = initial[initial.length-2];
-                ret[1] = initial[initial.length-1];
+                ret[2] = initial[initial.length-1];
                 System.out.println(Arrays.toString(ret));
             }
         }
@@ -145,12 +148,12 @@ public class FuzzyState {
         switch (logic) {
             case 1 -> similarity = Arrays.stream(ret).max().getAsDouble();
             case 2 -> similarity = Math.min(1, Arrays.stream(ret).sum());
-            case 3 -> similarity = getSimilarity(ret);
+            case 3 -> similarity = getPavelkaResult(ret);
             default -> System.out.println("Typed logic does not exist.");
         }
     }
 
-    private double getSimilarity(double[] array) {
+    private double getPavelkaResult(double[] array) {
         double similarity = array[0];
 
         for (int i = 1; i < array.length; i++) {

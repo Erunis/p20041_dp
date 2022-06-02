@@ -1,8 +1,8 @@
 package com.osu.dp.string_matching.FuzzyAutomaton;
 
 public class FuzzyLogic {
-    public static double GodelTNorm(double previousValue, double transitionValue) {
-        return Math.min(previousValue, transitionValue);
+    public static double GodelTNorm(double stateValue, double transitionValue) {
+        return Math.min(stateValue, transitionValue);
     }
 
     public static double[] GodelTKonorm(double[][] transitionMatrix) {
@@ -17,8 +17,8 @@ public class FuzzyLogic {
         return temp;
     }
 
-    public static double LukasiewiczTNorm(double previousValue, double transitionValue) {
-        return Math.max(0, previousValue + transitionValue - 1);
+    public static double LukasiewiczTNorm(double stateValue, double transitionValue) {
+        return Math.max(0, stateValue + transitionValue - 1);
     }
 
     public static double[] LukasiewiczTKonorm(double[][] transitionMatrix) {
@@ -36,8 +36,8 @@ public class FuzzyLogic {
         return temp;
     }
 
-    public static double PavelkaTNorm(double previousValue, double transitionValue) {
-        return (previousValue * transitionValue);
+    public static double PavelkaTNorm(double stateValue, double transitionValue) {
+        return (stateValue * transitionValue);
     }
 
     public static double[] PavelkaTKonorm(double[][] transitionMatrix) {

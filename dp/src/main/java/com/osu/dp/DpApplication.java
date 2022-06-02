@@ -186,6 +186,8 @@ public class DpApplication {
 		HashMap<String, Double> simMap = new HashMap<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
 
+		StopWatch stopWatch = new StopWatch("Fuzzy automata");
+		stopWatch.start();
 		for (Dictionary entry : dictionary) {
 			double similarity = fuzzyAutomaton.similarityFunc(entry.getPattern(), source, logic);
 			simMap.put(entry.getPattern(), similarity);
@@ -193,7 +195,7 @@ public class DpApplication {
 
 		Map<String, Double> sorted = Results.sortByValue(simMap);
 		int count = 0;
-		int elementsToReturn = 3;
+		int elementsToReturn = 20;
 
 		for (String s : sorted.keySet()) {
 			if (count < elementsToReturn) {
@@ -205,6 +207,8 @@ public class DpApplication {
 			}
 			count++;
 		}
+		stopWatch.stop();
+		System.out.println(stopWatch.getTotalTimeNanos());
 
 		return ret;
 	}
