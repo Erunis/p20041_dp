@@ -29,7 +29,7 @@ public class DynamicLevenshtein {
             }
         }
 
-        LevenshteinTools.printMatrix(distMatrix);
+        //LevenshteinTools.printMatrix(distMatrix);
         return distMatrix[source.length()][target.length()];
     }
 }

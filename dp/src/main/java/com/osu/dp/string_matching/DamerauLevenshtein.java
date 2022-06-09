@@ -30,7 +30,7 @@ public class DamerauLevenshtein {
             }
         }
 
-        LevenshteinTools.printMatrix(distMatrix);
+        //LevenshteinTools.printMatrix(distMatrix);
         return distMatrix[source.length()][target.length()];
     }
 }

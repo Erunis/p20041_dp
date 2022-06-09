@@ -36,7 +36,7 @@ public class DpApplication {
 		source = source.toLowerCase();
 		List<String> result = new ArrayList<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
-		int n = 3;
+		int n = 5;
 		List<Results> simList = new ArrayList<>();
 
 		StopWatch stopWatch = new StopWatch("Recursive Levenshtein");
@@ -48,7 +48,7 @@ public class DpApplication {
 			simList.add(new Results(entry.getPattern(), similarity, distance));
 		}
 		stopWatch.stop();
-		System.out.println(stopWatch);
+		System.out.println(stopWatch.getTotalTimeNanos());
 
 		Collections.sort(simList);
 		List<Results> elements;
@@ -75,7 +75,7 @@ public class DpApplication {
 		source = source.toLowerCase();
 		List<String> result = new ArrayList<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
-		int n = 3;
+		int n = 5;
 		List<Results> simList = new ArrayList<>();
 
 		StopWatch stopWatch = new StopWatch("Dynamic Levenshtein");
@@ -87,7 +87,7 @@ public class DpApplication {
 			simList.add(new Results(entry.getPattern(), similarity, distance));
 		}
 		stopWatch.stop();
-		System.out.println(stopWatch);
+		System.out.println(stopWatch.getTotalTimeNanos());
 
 		Collections.sort(simList);
 		List<Results> elements;
@@ -114,7 +114,7 @@ public class DpApplication {
 		source = source.toLowerCase();
 		List<String> result = new ArrayList<>();
 		List<Dictionary> dictionary = dictionaryRepository.findAll();
-		int n = 3;
+		int n = 5;
 		List<Results> simList = new ArrayList<>();
 
 		StopWatch stopWatch = new StopWatch("Damerau-Levenshtein");
@@ -126,7 +126,7 @@ public class DpApplication {
 			simList.add(new Results(entry.getPattern(), similarity, distance));
 		}
 		stopWatch.stop();
-		System.out.println(stopWatch);
+		System.out.println(stopWatch.getTotalTimeNanos());
 
 		Collections.sort(simList);
 		List<Results> elements;
@@ -165,13 +165,13 @@ public class DpApplication {
 			}
 
 			else {
-				System.out.println(String.format("Levenshteinův automat pro cílové slovo: %s o maximální " +
+				/*System.out.println(String.format("Levenshteinův automat pro cílové slovo: %s o maximální " +
 						"Levenshteinově vzdálenosti: %d nebyl schopný přijmout zdrojové slovo: %s.",
-						entry.getPattern(), distance, source));
+						entry.getPattern(), distance, source));*/
 			}
 		}
 		stopWatch.stop();
-		System.out.println(stopWatch);
+		System.out.println(stopWatch.getTotalTimeNanos());
 
 		return result;
 	}
@@ -195,7 +195,7 @@ public class DpApplication {
 
 		Map<String, Double> sorted = Results.sortByValue(simMap);
 		int count = 0;
-		int elementsToReturn = 20;
+		int elementsToReturn = 5;
 
 		for (String s : sorted.keySet()) {
 			if (count < elementsToReturn) {
@@ -211,5 +211,13 @@ public class DpApplication {
 		System.out.println(stopWatch.getTotalTimeNanos());
 
 		return ret;
+	}
+
+	@CrossOrigin(origins = "*")
+	@GetMapping("/allData")
+	public List<Dictionary> fetchData() {
+		List<Dictionary> dictionary = dictionaryRepository.findAll();
+
+		return dictionary;
 	}
 }

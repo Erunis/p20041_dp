@@ -69,7 +69,7 @@ public class FuzzyState {
         }
 
         else {
-            System.out.println("Source word is too long.");
+            //System.out.println("Source word is too long.");
             similarity = 0;
         }
 
