@@ -35,7 +35,7 @@ The thesis is written only in Czech language and is not included in this reposit
 ## Running the application
 To run the final application for the practical section of this thesis, it's requited to first download all the source files that are included as an attachment to the text file of this thesis, or are publicly available in folder ```dp/src/main/java/com/osu/dp``` in this repository.
 
-Next, it's necessary to build a MySQL database on your device (or for local development it is possible to emulate it via XAMPP) and import test data from the ```dictionary.sql`` file, or if you want to you can fill up the database with your own test data in format:
+Next, it's necessary to build a MySQL database on your device (or for local development it is possible to emulate it via XAMPP) and import test data from the ```dictionary.sql``` file, or if you want to you can fill up the database with your own test data in format:
 - ```id (bigint(20))``` ... unique identifier of the pattern string
 - ```pattern (varchar(255))``` ... pattern string (e.g. "robot", "computer", ...)
 - ```long_word (tinyint(1))``` ... pattern length identifier, 0 = short word, 1 = long word
