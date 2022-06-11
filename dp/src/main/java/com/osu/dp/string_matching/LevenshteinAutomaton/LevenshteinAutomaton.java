@@ -1,15 +1,15 @@
 package com.osu.dp.string_matching.LevenshteinAutomaton;
 
 public class LevenshteinAutomaton {
-    /** Sestrojení počátečního stavu. */
+    /** Construction of the initial state of the Levenshtein automaton. */
     private static final State initialState = new State(new Position[] {
             new Position(0, 0)
     });
 
-    /** Metoda pro výpočet, zda-li Levenshteinův automat sestrojený pro cílové slovo přijímá slovo zdrojové.
-     * @param source ... zdrojový řetězec
-     * @param target ... cílový řetězec
-     * @param distance ... maximální povolená Levenshteinova vzdálenost */
+    /** Method for calculation if the Levenshtein automaton, constructed for the pattern string, accepts the source string.
+     * @param source ... input source string
+     * @param target ... pattern string
+     * @param distance ... maximal allowed Levenshtein distance */
     public static boolean isAccepted(String source, String target, int distance) {
         State currentState = initialState;
 
@@ -23,7 +23,7 @@ public class LevenshteinAutomaton {
         return isAcceptingState(currentState, source.length(), distance);
     }
 
-    /** Metoda pro zjištění, jestli je aktuální stav stavem akceptujícím řetězec. */
+    /** Method for determining if current state is accepting state. */
     public static boolean isAcceptingState(State state, int sourceLength, int levenshteinDist)
     {
         for (Position position : state.getPositions())
@@ -36,7 +36,7 @@ public class LevenshteinAutomaton {
         return false;
     }
 
-    /** Metoda pro zjištění, jestli daná pozice v automatu akceptuje řetězec. */
+    /** Method for determining if current position in the automaton accepts the string. */
     private static boolean isAcceptingPosition(Position position, int sourceLength, int levenshteinDist) {
         return sourceLength - position.getIndex() <= levenshteinDist - position.getEditsCount();
     }

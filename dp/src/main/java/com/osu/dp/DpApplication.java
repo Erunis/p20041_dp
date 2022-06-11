@@ -1,5 +1,14 @@
 package com.osu.dp;
 
+/**
+ * This program implements today’s methods used for fuzzy search and tries to extend them with it's collected
+ * knowledge of fuzzy finite automatons. The program is made as for a diploma thesis as its final practical project.
+ * For more information about the theory and architecture used for this project please contact the author.
+ *
+ * @author Gabriela Muchová
+ * @see https://github.com/Erunis
+ * */
+
 import com.osu.dp.database.Dictionary;
 import com.osu.dp.database.DictionaryRepository;
 import com.osu.dp.string_matching.DamerauLevenshtein;
@@ -165,9 +174,9 @@ public class DpApplication {
 			}
 
 			else {
-				/*System.out.println(String.format("Levenshteinův automat pro cílové slovo: %s o maximální " +
+				System.out.println(String.format("Levenshteinův automat pro cílové slovo: %s o maximální " +
 						"Levenshteinově vzdálenosti: %d nebyl schopný přijmout zdrojové slovo: %s.",
-						entry.getPattern(), distance, source));*/
+						entry.getPattern(), distance, source));
 			}
 		}
 		stopWatch.stop();

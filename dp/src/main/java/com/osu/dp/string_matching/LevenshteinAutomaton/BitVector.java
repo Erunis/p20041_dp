@@ -2,13 +2,13 @@ package com.osu.dp.string_matching.LevenshteinAutomaton;
 
 import java.util.BitSet;
 
-/** Pomocná třída pro překládání do bit-vektorové reprezentace. */
+/** Auxiliary class for translating string to bit-vector represantation. */
 public class BitVector extends BitSet {
     private int BitSetSize = 0;
 
     public BitVector(int BitSetSize) {
         super(BitSetSize);
-        this.BitSetSize = BitSetSize; //inicializace požadované velikosti bit-vektoru
+        this.BitSetSize = BitSetSize; // Initialization of bit-vector size
 
     }
 

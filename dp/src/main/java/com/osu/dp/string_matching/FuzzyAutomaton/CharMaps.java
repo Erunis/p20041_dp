@@ -3,6 +3,21 @@ package com.osu.dp.string_matching.FuzzyAutomaton;
 import java.util.Map;
 
 public class CharMaps {
+    /**
+     * Matrix storing the degree of similarity values for all of the letters of Czech alphabet. The values are:
+     *  1 ... the letters are the same
+     *  0.9 ... the letters are almost the same with slightly different pronunciation, e.g. "a" and "á"
+     *  0.7 ... the letters look the same, but they have completely different pronunciations, e.g. "e" and "ě"
+     *  0.6 ... the letters might look really similar, e.g. "b" and "d",
+     *          or their usage can be really misleading mainly to foreign users, e.g. "s" and "z"
+     *  0.5 ... letter that is next to the currently examined pattern letter
+     *  0.4 ... special case for empty symbol #, if the pattern string ended with last letter, but source string
+     *          continues with other letter, for calculating with the possibility of typing error
+     *  0.3 ... the letters are completely different, but their usage or pronunciation can be quite similar,
+     *          e.g. "b" and "p" or "r" and "l" in Czech language
+     *  0.1 ... letter that is two characters next to the examined pattern letter
+     *  0 ... the letters have no similarity
+     * */
     public static double[][] setSimilarityMatrix() {
         return new double[][]{
                 {1, 0.9, 0,	0.1, 0.1, 0.1, 0.1, 0.1, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.1, 0, 0.5, 0.5, 0, 0, 0, 0, 0, 0, 0.5, 0.5, 0.5, 0, 0.5, 0, 0.4},
@@ -50,6 +65,7 @@ public class CharMaps {
         };
     }
 
+    /** Map for storing the characters and their index in the similarity matrix above. */
     public static void setCharMap(Map<String, Integer> charMap) {
         charMap.put("a", 0);
         charMap.put("á", 1);

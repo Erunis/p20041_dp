@@ -4,16 +4,11 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 
+/** Auxiliary class for storing the best 5 results from the automaton calculation over the database. */
 public class Results implements Comparable<Results>{
     String pattern;
     double similarity;
     int distance;
-
-    public Results(String pattern, int distance) {
-        this.pattern = pattern;
-        this.similarity = similarity;
-        this.distance = distance;
-    }
 
     public Results(String pattern, double similarity, int distance) {
         this.pattern = pattern;

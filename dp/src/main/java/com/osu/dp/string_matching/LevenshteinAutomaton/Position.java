@@ -3,10 +3,10 @@ package com.osu.dp.string_matching.LevenshteinAutomaton;
 import java.util.Arrays;
 import java.util.HashSet;
 
-/** Třída reprezentující pozici v Levenshteinově NKA */
+/** Class representing position in the Levenshtein NFA (non-deterministic finite automaton).*/
 public class Position implements Comparable<Position> {
-    private final int index; //číslo reprezentující index pozice v automatu
-    private final int editsCount; //číslo reprezentující předpokládaný počet operací úprav
+    private final int index; // Index representing the position in the automaton.
+    private final int editsCount; // Number representing the presumed number of edit operations.
 
     public int getEditsCount() {
         return editsCount;
@@ -16,33 +16,34 @@ public class Position implements Comparable<Position> {
         return index;
     }
 
-    private enum levenshteinDistRatio { //poměr mezi Levenshteinovou vzdáleností a provedeným počtem úprav
+    private enum levenshteinDistRatio { // Levenshtein distance and number of edit operations ratio.
         MAX, MIDDLE, ZERO
     }
 
-    private enum BitVectorTransitionType { //kategorie velikostí bit-vektorů pro přechody mezi pozicemi
+    private enum BitVectorTransitionType { // The category of bit-vector transition sizes.
         ATLEAST_TWO, ONE, ZERO
     }
 
     private  enum IndexPositionType {
-        FIRST_INDEX, TRAILING_INDEX, NO_INDEX //kategorie pozic indexů
+        FIRST_INDEX, TRAILING_INDEX, NO_INDEX // Category of position indexes.
     }
 
-    private enum Transitions { //definice souboru možných přechodů mezi pozicemi
-        MATCH(1, 0), //znaky se shodují
-        INSERTION(0, 1), //vkládání znaku
-        SUBSTITUTION(1, 1), //substituce
-        DELETION(0, 0),  //mazání znaku
-        FAILURE(0, 0); //error
+    private enum Transitions { // Definition of the set of edit operations that determine the transitions between states.
+        MATCH(1, 0), // The letters are the same.
+        INSERTION(0, 1), // Insert
+        SUBSTITUTION(1, 1), // Substitution
+        DELETION(0, 0),  // Delete
+        FAILURE(0, 0); // Error
 
         private final int INDEX_OFFSET;
         private final int EDITS_COUNT_OFFSET;
 
-        Transitions(int iOffset, int eOffset) { //konstruktor pro zadávání offsetů pro index pozice v automatu a předpokládaný počet edit operations
+        // Constructor for adding offsets for position indexes and presumed count of edit operations.
+        Transitions(int iOffset, int eOffset) {
             INDEX_OFFSET = iOffset; EDITS_COUNT_OFFSET = eOffset;
         }
 
-        /* V případě operace mazání je potřeba "posunout" celé slovo */
+        /** In case of the delete operation we need to "move" the whole string. */
         public Position execute(Position p, int hitIndex) {
             if (!this.equals(FAILURE)) {
                 int newI = p.getIndex() + (this.equals(DELETION) ? hitIndex + 1 : INDEX_OFFSET);
@@ -55,6 +56,7 @@ public class Position implements Comparable<Position> {
         }
     }
 
+    /** Creation of the list of all the possible transitions. */
     private static final Transitions[] MATCH_TRANSITION = new Transitions[] {Transitions.MATCH};
     private static final Transitions[] INSERTION_SUBSTITUTION_DELETION_TRANSITION = new Transitions[] {Transitions.INSERTION, Transitions.SUBSTITUTION, Transitions.DELETION};
     private static final Transitions[] INSERTION_SUBSTITUTION_TRANSITION = new Transitions[] {Transitions.INSERTION, Transitions.SUBSTITUTION};
@@ -67,6 +69,7 @@ public class Position implements Comparable<Position> {
         this.editsCount = editsCount;
     }
 
+    /** Method for processing the transitions between automaton states. */
     public Transitions[] getTransition(levenshteinDistRatio levDistRatio, BitVectorTransitionType bVTType, IndexPositionType iPType) {
         switch(levDistRatio) {
             case ZERO:
@@ -171,8 +174,7 @@ public class Position implements Comparable<Position> {
         return internalTransitions(levenshteinDist, transitionData[0], transitionData[1]);
     }
 
-
-    public boolean subsumes(Position p) {
+    public boolean contains(Position p) {
          return (this.editsCount < p.editsCount && !(Math.abs(p.index - this.index) > (p.editsCount - this.editsCount)));
     }
 
